@@ -438,42 +438,65 @@
       </div>
 
       <!-- AI Assistant Mock Box & Interactive UI -->
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center fade-in">
-        <div class="lg:col-span-4 space-y-4">
-          <h3 class="font-batang text-xl font-bold text-navyDark dark:text-skyWarm">Gemini AI Wellness 분석기</h3>
-          <p class="text-xs sm:text-sm text-slateDark/70 dark:text-slate-400 leading-relaxed font-light">
-            취미인 운동(수영), 독서, 음악, 일상 관리 규칙을 T 관점에서 지탱해 주는 정보 보관 보드입니다. 우측 분석 탭을 선택해 주십시오.
+      <!-- 🔍 LOGICAL WELL-BEING / KNOWLEDGE BOX SECTION (똑똑한 건강 지식 상자) -->
+  <section id="wellness" class="py-24 px-6 bg-white relative z-20">
+    <div class="max-w-5xl mx-auto">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        
+        <!-- Left Side: Conceptual Info -->
+        <div class="lg:col-span-5 space-y-6 fade-in">
+          <span class="text-xs font-bold tracking-widest text-orangeGlow uppercase block">Logical Knowledge</span>
+          <h2 class="font-batang text-2xl sm:text-3xl md:text-4xl leading-snug font-bold text-slateDark">
+            AI·유튜브를 통해<br>틈틈이 건강 정보를<br>습득하고자 합니다!
+          </h2>
+          <p class="text-xs sm:text-sm text-slateDark/80 leading-relaxed font-light">
+            AI 검색 결과와 실생활 피드백 루프를 통해 귀납적으로 도출한 실용 정보입니다. 
+            주제 탭을 선택하여 정밀화된 데이터를 빠르게 확인해 보세요.
           </p>
+          <div class="flex flex-wrap gap-2 pt-2">
+            <span class="px-3 py-1 bg-skyLight text-slateDark/80 text-xs rounded-full font-medium">#Gemini검색</span>
+            <span class="px-3 py-1 bg-skyLight text-slateDark/80 text-xs rounded-full font-medium">#의식주케어</span>
+            <span class="px-3 py-1 bg-skyLight text-slateDark/80 text-xs rounded-full font-medium">#루틴실천법</span>
+          </div>
         </div>
 
-        <!-- Assistant Output Display -->
-        <div class="lg:col-span-8 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md rounded-3xl p-6 border border-slate-100 dark:border-slate-700 shadow-md">
+        <!-- Right Side: Interactive AI Assistant Simulator -->
+        <div class="lg:col-span-7 bg-[#FAF8F5] rounded-3xl p-6 border border-sandWarm shadow-md fade-in">
+          <div class="flex items-center gap-2 mb-4 text-xs font-medium text-slateDark/50 pb-3 border-b border-slateDark/5">
+            <i class="fa-solid fa-sparkles text-orangeGlow"></i> Gemini AI Wellness Engine (Active Sim)
+          </div>
+          
+          <!-- Presets buttons -->
           <div class="flex flex-wrap gap-2 mb-4">
-            <button onclick="simulateQuery(1)" class="px-3 py-2 text-xs bg-skyWarm text-navyDark rounded-xl font-bold transition-all" id="qbtn-1">
-              💻 FE 적성 소거 기준은?
+            <button onclick="simulateQuery(1)" class="px-3 py-2 text-xs bg-white text-slateDark rounded-xl hover:bg-skyWarm font-medium shadow-sm transition-all text-left flex items-center gap-1.5 border border-white" id="qbtn-1">
+              🏊‍♂️ 공복 운동 식사는?
             </button>
-            <button onclick="simulateQuery(2)" class="px-3 py-2 text-xs bg-slate-50 dark:bg-slate-700 text-slateDark dark:text-slate-300 rounded-xl font-medium hover:bg-skyWarm/40 transition-all" id="qbtn-2">
-              🏊‍♂️ 공복 수영 식사 조절은?
+            <button onclick="simulateQuery(2)" class="px-3 py-2 text-xs bg-white text-slateDark rounded-xl hover:bg-skyWarm font-medium shadow-sm transition-all text-left flex items-center gap-1.5 border border-white" id="qbtn-2">
+              💆‍♂️ 숙면 유도 음악 큐?
             </button>
-            <button onclick="simulateQuery(3)" class="px-3 py-2 text-xs bg-slate-50 dark:bg-slate-700 text-slateDark dark:text-slate-300 rounded-xl font-medium hover:bg-skyWarm/40 transition-all" id="qbtn-3">
-              ☕ 보사노바 이완 원리는?
+            <button onclick="simulateQuery(3)" class="px-3 py-2 text-xs bg-white text-slateDark rounded-xl hover:bg-skyWarm font-medium shadow-sm transition-all text-left flex items-center gap-1.5 border border-white" id="qbtn-3">
+              🎯 루틴을 유지하는 비결?
             </button>
           </div>
 
-          <div class="bg-sandBeige/40 dark:bg-slate-900/60 rounded-2xl p-5 min-h-[160px] border border-slate-200/50 dark:border-slate-800 flex flex-col justify-between overflow-hidden relative">
+          <!-- Output Box -->
+          <div class="bg-white rounded-2xl p-5 min-h-[180px] border border-sandWarm flex flex-col justify-between relative overflow-hidden">
             <div id="aiResponseContainer" class="space-y-3">
-              <h4 class="font-batang font-bold text-sm text-navyDark dark:text-skyWarm">분석 결과: 💻 프론트엔드가 아니라고 정의한 이성적 판단 기준</h4>
-              <p class="text-xs text-slateDark/80 dark:text-slate-300 font-light leading-relaxed">전공 수업 과업 수행 시 비주얼 렌더링 및 CSS 오차범위 보정 작업에서 효율성이 현격히 저하됨을 인지했습니다.</p>
-              <div class="p-3 bg-white dark:bg-slate-800 rounded-xl text-[11px] text-slateDark/70 dark:text-slate-300 leading-relaxed shadow-inner">
-                <strong>- 명확성의 결여 소거:</strong> 브라우저 렌더링 특유의 디버깅보단 JVM 컴파일 정적 메모리 위에서 정확하게 예측 수렴하는 백엔드 설계를 목표로 확립했습니다.
-              </div>
+              <p class="text-xs text-slateDark/50 italic flex items-center gap-2">
+                <i class="fa-solid fa-hourglass-start animate-spin"></i> 상기 데이터 프리셋을 선택하시면 검증된 분석 결과를 로드합니다.
+              </p>
             </div>
-            <div class="h-1 bg-skyWarm rounded-full w-full mt-4 overflow-hidden hidden" id="aiLoadingBar">
+            
+            <!-- Deco Loader Bar -->
+            <div class="h-1 bg-[#CDE2F5] rounded-full w-full mt-4 overflow-hidden hidden" id="aiLoadingBar">
               <div class="bg-orangeGlow h-full animate-pulse" style="width: 100%"></div>
             </div>
           </div>
         </div>
+
       </div>
+    </div>
+  </section>
 
       <!-- 💾 LocalStorage GUESTBOOK (도전 과제) -->
       <div class="bg-white/60 dark:bg-slate-800/60 p-6 md:p-8 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-md space-y-6 fade-in">
