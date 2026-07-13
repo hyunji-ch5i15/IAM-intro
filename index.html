@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>최현지 | 나만의 선선한 해변을 찾아서</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts: Gowun Batang for Serif Accents, Noto Sans KR for Body -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Tailwind Custom Config mapping Design Tokens -->
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            skyLight: '#F0F7FF',     /* 🌤️ 연한 하늘색 배경 (라이트) */
+            skyWarm: '#D1E3F3',      /* 🌤️ 은은한 하늘색 */
+            sandBeige: '#F9F6F0',    /* 🏖️ 초연한 모래빛 베이지 */
+            orangeGlow: '#FF9E79',   /* 🍊 따뜻한 주황빛 포인트 */
+            mintBreeze: '#B2D8D0',   /* 🍃 소프트 민트 포인트 */
+            slateDark: '#334155',    /* 🖋️ 담백한 차콜 텍스트 */
+            navyDark: '#1C2D42',     /* ⚓ 딥 오션 네이비 */
+            slateBlue: '#4A5D75',
+          },
+          fontFamily: {
+            batang: ['Gowun Batang', 'serif'],
+            sans: ['Noto Sans KR', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Smooth Scroll Behavior */
+    html {
+      scroll-behavior: smooth;
+    }
+    
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #F9F6F0;
+    }
+    .dark ::-webkit-scrollbar-track {
+      background: #0f172a;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #B2D8D0;
+      border-radius: 4px;
+    }
+    .dark ::-webkit-scrollbar-thumb {
+      background: #4A5D75;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #FF9E79;
+    }
+
+    /* Custom Transitions & Effects */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(15px);
+      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    }
+    .fade-in.appear {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    /* Flipper for quote card */
+    .flip-card {
+      perspective: 1000px;
+    }
+    .flip-card-inner {
+      transition: transform 0.6s;
+      transform-style: preserve-3d;
+    }
+    .flip-card.flipped .flip-card-inner {
+      transform: rotateY(180deg);
+    }
+    .flip-card-front, .flip-card-back {
+      backface-visibility: hidden;
+    }
+    .flip-card-back {
+      transform: rotateY(180deg);
+    }
+
+    /* Custom Cursor Element (Visible only on Desktop) */
+    .custom-cursor {
+      width: 20px;
+      height: 20px;
+      border: 2px solid #FF9E79;
+      border-radius: 50%;
+      position: fixed;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 9999;
+      transition: width 0.2s, height 0.2s, background-color 0.2s;
+    }
+    .custom-cursor-dot {
+      width: 6px;
+      height: 6px;
+      background-color: #B2D8D0;
+      border-radius: 50%;
+      position: fixed;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 9999;
+    }
+  </style>
+</head>
+<body class="bg-skyLight dark:bg-slate-900 text-slateDark dark:text-slate-200 font-sans selection:bg-skyWarm selection:text-slateDark overflow-x-hidden transition-colors duration-300">
+
+  <!-- 📍 CUSTOM CURSOR (도전 과제) -->
+  <div class="custom-cursor hidden md:block" id="cursor"></div>
+  <div class="custom-cursor-dot hidden md:block" id="cursorDot"></div>
+
+  <!-- 📈 SCROLL PROGRESS BAR (도전 과제) -->
+  <div class="fixed top-0 left-0 w-full h-1 z-50 bg-sandBeige/20">
+    <div class="h-full bg-gradient-to-r from-[#FF9E79] to-[#B2D8D0] w-0 transition-all duration-75" id="scrollBar"></div>
+  </div>
+
+  <!-- ⚓ FIXED NAVIGATION BAR (MPA 현재 페이지 추적용) -->
+  <header class="fixed top-0 left-0 w-full z-40 transition-all duration-300 bg-white/75 dark:bg-slate-900/85 backdrop-blur-md border-b border-slate-100 dark:border-slate-800" id="mainHeader">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+      
+      <!-- Logo link always goes to home hash -->
+      <a href="#home" class="flex items-center gap-2 font-batang text-lg md:text-xl font-bold tracking-wide text-navyDark dark:text-skyWarm">
+        <span class="text-2xl text-orangeGlow">☀️</span>
+        <span>최현지 | 선선한 기록</span>
+      </a>
+      
+      <!-- MPA Navigation Links -->
+      <nav class="hidden md:flex items-center gap-6 font-medium text-xs md:text-sm tracking-wide">
+        <a href="#home" class="nav-link px-3 py-1.5 rounded-full transition-all hover:bg-slate-50 dark:hover:bg-slate-800">
+          <i class="fa-solid fa-house mr-1"></i> 해변 홈
+        </a>
+        <a href="#story" class="nav-link px-3 py-1.5 rounded-full transition-all hover:bg-slate-50 dark:hover:bg-slate-800">
+          <i class="fa-solid fa-user-gear mr-1"></i> 여정과 루틴
+        </a>
+        <a href="#wellness-guestbook" class="nav-link px-3 py-1.5 rounded-full transition-all hover:bg-slate-50 dark:hover:bg-slate-800">
+          <i class="fa-solid fa-envelope-open-text mr-1"></i> 지식 &amp; 방명록
+        </a>
+      </nav>
+
+      <!-- System Action & Theme Mode Controls -->
+      <div class="flex items-center gap-3">
+        <!-- 🌓 Dark/Light Mode Button (도전 과제) -->
+        <button onclick="toggleDarkMode()" class="p-2 w-9 h-9 bg-sandBeige dark:bg-slate-800 text-slateDark dark:text-skyWarm rounded-full hover:scale-105 transition-all flex items-center justify-center shadow-inner" title="테마 전환">
+          <i class="fa-regular fa-lightbulb text-sm" id="themeIcon"></i>
+        </button>
+        
+        <a href="#story" class="px-3.5 py-1.5 md:px-4 md:py-2 bg-navyDark dark:bg-skyWarm text-sandBeige dark:text-navyDark rounded-full text-xs font-semibold hover:opacity-90 hover:scale-105 transition-all shadow-sm">
+          루틴 추적
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================== -->
+  <!-- PAGE 1: 🌤️ HOME PAGE (#home)               -->
+  <!-- ========================================== -->
+  <main id="home" class="app-page relative pt-20">
+    <!-- Active Canvas Wave Background (Daytime bright tone) -->
+    <section class="relative min-h-[90vh] flex flex-col justify-center items-center bg-gradient-to-b from-skyWarm/40 via-skyLight to-sandBeige dark:from-slate-900 dark:via-slate-900 dark:to-slate-950 overflow-hidden px-6">
+      <canvas id="heroWaveCanvas" class="absolute bottom-0 left-0 w-full h-[260px] pointer-events-none z-10 opacity-70 dark:opacity-40"></canvas>
+      
+      <div class="max-w-4xl text-center z-20 select-none flex flex-col items-center py-12">
+        <span class="px-3 py-1.5 bg-white/70 dark:bg-slate-800/80 text-navyDark dark:text-skyWarm rounded-full text-xs font-bold tracking-widest mb-6 shadow-sm border border-slate-100 dark:border-slate-700 inline-flex items-center gap-1.5 uppercase">
+          <i class="fa-regular fa-compass text-orangeGlow"></i> SYSTEMIZED INTJ LIFE
+        </span>
+        
+        <h1 class="font-batang text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-slateDark leading-[1.3] font-bold tracking-tight mb-8">
+        SSAFY 16기 최현지입니다<br>
+        <span class="text-skyWarm font-normal italic">소거법에서 금융권 백엔드로</span>
+      </h1>
+      
+      <!-- Description -->
+      <p class="max-w-xl text-slateDark/70 leading-relaxed text-sm sm:text-base mb-10 font-light">
+        <strong>수영</strong>과 <strong>독서</strong>를 포함한 <strong>규칙적인 습관</strong>을 통해 <strong>일상의 불안과 복잡함을 제어</strong>합니다.<br>
+        혼자만의 고독했던 취준을 마치고, 싸피에서 <strong>동기들과 함께 으쌰으쌰 성장</strong>하고자 합니다.
+      </p>
+
+        <!-- MPA Core Action buttons -->
+        <div class="flex flex-col sm:flex-row gap-4 items-center justify-center">
+          <a href="#story" class="px-8 py-3.5 bg-navyDark dark:bg-slate-800 text-sandBeige dark:text-skyWarm rounded-full text-sm font-semibold shadow-md hover:-translate-y-0.5 transition-all inline-flex items-center gap-2">
+            나의 여정/루틴 보기 <i class="fa-solid fa-arrow-right text-xs"></i>
+          </a>
+          <a href="#wellness-guestbook" class="px-8 py-3.5 bg-white dark:bg-slate-700 text-navyDark dark:text-white border border-slate-100 dark:border-slate-600 rounded-full text-sm font-medium shadow-sm hover:bg-slate-50 dark:hover:bg-slate-600 transition-all inline-flex items-center gap-2">
+            방명록 남기기 <i class="fa-regular fa-comment text-xs"></i>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sound Room Section (Directly embedded on Home for quick relaxing) -->
+    <!-- Point 3. Sensory Card (Ambient Music Space) -->
+        <div class="bg-white/95 rounded-3xl p-8 border border-white shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group md:col-span-2 fade-in">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            
+            <!-- Left Info -->
+            <div class="lg:col-span-5 space-y-4">
+              <div class="flex justify-between items-start">
+                <span class="text-xs font-bold tracking-widest text-slateDark/75 uppercase px-3 py-1 bg-skyLight rounded-full">Sensory Sound Room</span>
+                <span class="text-3xl text-orangeGlow lg:hidden"><i class="fa-solid fa-compact-disc animate-spin" style="animation-duration: 4s;"></i></span>
+              </div>
+              <h3 class="font-batang text-xl font-bold text-slateDark">
+                좋아하는 노래 장르 🎵
+              </h3>
+              <p class="text-xs sm:text-sm text-slateDark/80 leading-relaxed font-light">
+                <strong>재즈</strong>와 <strong>보사노바</strong>는 반주가 선선하니 진짜 좋고, <strong>심신을 평온</strong>하게 만들어 줍니다. 부가적으로 <strong>시티팝</strong>이나 편안한 <strong>클래식</strong> 장르도 좋아합니다.
+              </p>
+            </div>
+
+            <!-- Right Interactive Ambient Sound & Music Synthesizer Player -->
+            <div class="lg:col-span-7 bg-skyLight/30 rounded-2xl p-6 border border-sandWarm shadow-sm relative overflow-hidden">
+              <div class="relative z-10 flex flex-col sm:flex-row items-center gap-6">
+                <!-- Disc Visualization -->
+                <div class="relative flex-shrink-0">
+                  <div class="w-24 h-24 bg-skyWarm rounded-full flex items-center justify-center text-3xl shadow-lg border-4 border-white overflow-hidden animate-spin" id="musicDisc" style="animation-duration: 8s; animation-play-state: paused;">
+                    ☀️
+                    <div class="absolute w-6 h-6 bg-white rounded-full border border-skyWarm/20"></div>
+                  </div>
+                  <!-- Mini Tone/Wave bar indicator -->
+                  <div class="absolute -bottom-2 -right-2 bg-orangeGlow text-white rounded-full w-8 h-8 flex items-center justify-center text-xs shadow-md">
+                    <i class="fa-solid fa-volume-high animate-pulse"></i>
+                  </div>
+                </div>
+
+                <!-- Player Controller UI -->
+                <div class="flex-grow w-full space-y-3">
+                  <div>
+                    <h4 class="font-bold text-sm text-slateDark" id="activeTrackTitle">재즈 &amp; 보사노바 컴필레이션</h4>
+                    <p class="text-xs text-slateDark/50 font-medium" id="activeTrackDesc">마음을 차분하게 씻어내는 선선한 밤바다풍 반주</p>
+                  </div>
+                  
+                  <!-- Fake Progress Bar -->
+                  <div class="w-full bg-white rounded-full h-1 relative overflow-hidden">
+                    <div class="bg-orangeGlow h-full rounded-full transition-all duration-300 w-0" id="audioProgressBar"></div>
+                  </div>
+                  <div class="flex justify-between text-[10px] text-slateDark/50 font-medium">
+                    <span id="audioCurrentTime">0:00</span>
+                    <span id="audioDuration">Ambient Live</span>
+                  </div>
+
+                  <!-- Player Buttons -->
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                      <button onclick="toggleAudio()" class="w-10 h-10 bg-[#334155] hover:bg-slate-700 text-white rounded-full flex items-center justify-center shadow-md transition-transform hover:scale-105" id="audioPlayBtn">
+                        <i class="fa-solid fa-play"></i>
+                      </button>
+                      <span class="text-[10px] bg-white text-slateDark px-2 py-1 rounded-md font-bold tracking-wider" id="audioStateBadge">대기 중</span>
+                    </div>
+
+                    <!-- Track Selector -->
+                    <div class="flex items-center gap-2">
+                      <button onclick="changeTrack('ambient')" class="text-xs px-2.5 py-1.5 rounded-full bg-skyWarm text-slateDark font-semibold shadow-sm transition-all" id="btn-ambient-track">보사노바</button>
+                      <button onclick="changeTrack('bossa')" class="text-xs px-2.5 py-1.5 rounded-full bg-white text-slateDark/60 font-semibold transition-all" id="btn-bossa-track">클래식&amp;재즈</button>
+                      <button onclick="changeTrack('city')" class="text-xs px-2.5 py-1.5 rounded-full bg-white text-slateDark/60 font-semibold transition-all" id="btn-city-track">시티팝</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Synthesizer Visualizer Bar Overlay -->
+              <div class="absolute bottom-0 left-0 w-full flex justify-around h-6 items-end pointer-events-none opacity-30">
+                <div class="bg-orangeGlow w-2 transition-all duration-150 h-1" id="vbar1"></div>
+                <div class="bg-orangeGlow w-2 transition-all duration-150 h-1" id="vbar2"></div>
+                <div class="bg-orangeGlow w-2 transition-all duration-150 h-1" id="vbar3"></div>
+                <div class="bg-orangeGlow w-2 transition-all duration-150 h-1" id="vbar4"></div>
+                <div class="bg-orangeGlow w-2 transition-all duration-150 h-1" id="vbar5"></div>
+                <div class="bg-orangeGlow w-2 transition-all duration-150 h-1" id="vbar6"></div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+  </main>
+
+  <!-- ========================================== -->
+  <!-- PAGE 2: 📅 STORY & PLANNER PAGE (#story)    -->
+  <!-- ========================================== -->
+  <main id="story" class="app-page hidden relative pt-24 min-h-[90vh]">
+    <div class="max-w-5xl mx-auto px-6 py-8 space-y-12">
+      
+      <!-- Introduction Header -->
+      <div class="space-y-4 fade-in">
+        <span class="text-xs font-bold tracking-widest text-[#8EAEB5] uppercase block">02. Career &amp; Daily Life</span>
+        <h2 class="font-batang text-3xl sm:text-4xl font-bold text-navyDark dark:text-skyWarm">여정의 시작과 루틴 계획표</h2>
+        <p class="text-sm sm:text-base text-slateDark/80 dark:text-slate-300 max-w-3xl font-light leading-relaxed">
+          컴퓨터공학과 전공수업 도중 프론트엔드가 적성이 아님을 냉정하게 소거법으로 판단하고, 
+          체계적인 JVM 로직과 데이터 보존에 이끌려 백엔드의 길을 선택했습니다. 
+          상반기 독학 스터디카페 기간을 건강히 지켜 준 수영과 독서 루틴을 싸피에서 동기들과 함께 더 확장해 나가고자 합니다.
+        </p>
+      </div>
+
+      <!-- 📍 INTERACTIVE TIMELINE (도전 과제) -->
+      <div class="bg-white/80 dark:bg-slate-800/80 backdrop-blur-md rounded-3xl p-6 md:p-8 border border-slate-100 dark:border-slate-700 shadow-md fade-in">
+        <h3 class="font-batang text-lg font-bold text-navyDark dark:text-skyWarm mb-6 flex items-center gap-2">
+          <i class="fa-solid fa-timeline text-orangeGlow"></i> 학습 및 커리어 연대기
+        </h3>
+        
+        <!-- Timeline Navigation Steps -->
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-2 mb-6">
+          <button onclick="setTimeline(1)" class="p-3 text-xs font-semibold rounded-xl text-center transition-all bg-skyWarm/50 text-navyDark" id="tbtn-1">
+            💻 컴공 전공졸업 (02년생)
+          </button>
+          <button onclick="setTimeline(2)" class="p-3 text-xs font-semibold rounded-xl text-center transition-all bg-slate-50 dark:bg-slate-700 text-slateDark dark:text-slate-300" id="tbtn-2">
+            🚫 프론트엔드 소거
+          </button>
+          <button onclick="setTimeline(3)" class="p-3 text-xs font-semibold rounded-xl text-center transition-all bg-slate-50 dark:bg-slate-700 text-slateDark dark:text-slate-300" id="tbtn-3">
+            🏦 금융권 백엔드 타겟
+          </button>
+          <button onclick="setTimeline(4)" class="p-3 text-xs font-semibold rounded-xl text-center transition-all bg-slate-50 dark:bg-slate-700 text-slateDark dark:text-slate-300" id="tbtn-4">
+            🏊‍♂️ 상반기 수영 &amp; 독서
+          </button>
+          <button onclick="setTimeline(5)" class="p-3 text-xs font-semibold rounded-xl text-center transition-all bg-slate-50 dark:bg-slate-700 text-slateDark dark:text-slate-300" id="tbtn-5">
+            🚀 SSAFY 16기 입과
+          </button>
+        </div>
+
+        <!-- Dynamic Timeline Output Panel -->
+        <div class="bg-sandBeige/50 dark:bg-slate-900/60 p-5 rounded-2xl border border-slate-200/50 dark:border-slate-800 text-xs sm:text-sm text-slateDark dark:text-slate-200 leading-relaxed min-h-[140px] flex flex-col justify-center" id="timelineContent">
+          <p class="font-bold text-navyDark dark:text-skyWarm text-base mb-2">💻 컴퓨터공학과 졸업 및 정체성 정립</p>
+          <p class="font-light">02년생으로 컴퓨터공학 학사 전공 과정을 성실히 마쳤습니다. 설계와 인프라의 질서 있는 연산 구조를 파악하며 프로그래밍의 기초 논리를 확립했습니다.</p>
+        </div>
+      </div>
+
+      <!-- Interactive Routine Planner Panel -->
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
+        
+        <!-- Planner Left Instructions -->
+        <div class="md:col-span-7 space-y-4">
+            <div class="md:col-span-5 space-y-6 flex flex-col justify-between">
+          <div>
+            <span class="text-xs font-bold tracking-widest text-slateDark/50 uppercase block mb-2">Daily Routine Tracker</span>
+            <h2 class="font-batang text-2xl md:text-3xl font-bold leading-snug text-slateDark">
+              지속 가능한 행동을 위한<br><span class="relative inline-block"><span class="relative z-10 text-slateDark">구조적 균형 플래너</span><span class="absolute bottom-1 left-0 w-full h-2 bg-skyWarm/60 -z-0"></span></span>
+            </h2>
+            <p class="text-xs sm:text-sm text-slateDark/70 leading-relaxed mt-4 font-light">
+              의미 없는 나태나 불완전함을 덜어내기 위해 수립한 네 가지 일일 행동 척도입니다. 
+              스스로 약속한 과업 목록을 객관적으로 관리하고 달성률을 시각화합니다.
+            </p>
+          </div>
+
+          <!-- Circular SVG Progress Indicator -->
+          <div class="flex items-center gap-4 bg-[#FDFBF7] p-4 rounded-2xl border border-sandWarm">
+            <div class="relative w-16 h-16 flex items-center justify-center flex-shrink-0">
+              <svg class="w-full h-full transform -rotate-90">
+                <circle cx="32" cy="32" r="28" stroke="#E9EFF5" stroke-width="4" fill="transparent" />
+                <circle cx="32" cy="32" r="28" stroke="#FF9E79" stroke-width="4" fill="transparent" 
+                        stroke-dasharray="175.9" stroke-dashoffset="175.9" id="progressCircle" 
+                        class="transition-all duration-500 ease-out" />
+              </svg>
+              <span class="absolute text-xs font-bold text-slateDark" id="progressPercent">0%</span>
+            </div>
+            <div>
+              <p class="text-xs font-bold text-slateDark">오늘 루틴 달성 지표</p>
+              <p class="text-[10px] text-slateDark/50 mt-0.5" id="progressStatus">과업 수행 대기 중입니다.</p>
+            </div>
+          </div>
+        </div>
+          <!-- Item 1 -->
+          <label class="flex items-start gap-4 p-4 bg-sandBeige rounded-2xl border border-transparent hover:border-orangeGlow/30 cursor-pointer transition-all hover:-translate-x-1 select-none">
+            <input type="checkbox" onchange="updateRoutineProgress()" class="mt-1 w-5 h-5 rounded border-slateDark/20 text-orangeGlow focus:ring-orangeGlow cursor-pointer" data-weight="25">
+            <div class="space-y-0.5">
+              <p class="font-bold text-sm text-slateDark">🏊‍♂️ 오전 수영 또는 가벼운 스트레칭 수행</p>
+              <p class="text-[11px] text-slateDark/75 font-light">신체 활성화: 근력 증진 및 하루 집중 시간 확보를 위한 수영 세션</p>
+            </div>
+          </label>
+
+          <label class="flex items-start gap-4 p-4 bg-sandBeige rounded-2xl border border-transparent hover:border-orangeGlow/30 cursor-pointer transition-all hover:-translate-x-1 select-none">
+            <input type="checkbox" onchange="updateRoutineProgress()" class="mt-1 w-5 h-5 rounded border-slateDark/20 text-orangeGlow focus:ring-orangeGlow cursor-pointer" data-weight="25">
+            <div class="space-y-0.5">
+              <p class="font-bold text-sm text-slateDark">💻 전공 지식 ON! 알고리즘 1문제 풀기</p>
+              <p class="text-[11px] text-slateDark/75 font-light">문제 해결 역량 키우기: 하루 1시간! 알고리즘 지식을 습득해요</p>
+            </div>
+          </label>
+
+          <!-- Item 2 -->
+          <label class="flex items-start gap-4 p-4 bg-sandBeige rounded-2xl border border-transparent hover:border-orangeGlow/30 cursor-pointer transition-all hover:-translate-x-1 select-none">
+            <input type="checkbox" onchange="updateRoutineProgress()" class="mt-1 w-5 h-5 rounded border-slateDark/20 text-orangeGlow focus:ring-orangeGlow cursor-pointer" data-weight="25">
+            <div class="space-y-0.5">
+              <p class="font-bold text-sm text-slateDark">📖 소설 정독 및 서평 작성을 위한 핵심 독서</p>
+              <p class="text-[11px] text-slateDark/75 font-light">지적 고양: 인지 정화 및 상상력 가동을 위한 문학 텍스트 정독</p>
+            </div>
+          </label>
+
+          <!-- Item 3 -->
+          <label class="flex items-start gap-4 p-4 bg-sandBeige rounded-2xl border border-transparent hover:border-orangeGlow/30 cursor-pointer transition-all hover:-translate-x-1 select-none">
+            <input type="checkbox" onchange="updateRoutineProgress()" class="mt-1 w-5 h-5 rounded border-slateDark/20 text-orangeGlow focus:ring-orangeGlow cursor-pointer" data-weight="25">
+            <div class="space-y-0.5">
+              <p class="font-bold text-sm text-slateDark">☕ 보사노바 &amp; 재즈와 함께 기분 전환하기</p>
+              <p class="text-[11px] text-slateDark/75 font-light">작업 능률: 안정적 음파 주파수를 활용한 오감 진정 및 집중도 수립</p>
+            </div>
+          </label>
+
+          <!-- Item 4 -->
+          <label class="flex items-start gap-4 p-4 bg-sandBeige rounded-2xl border border-transparent hover:border-orangeGlow/30 cursor-pointer transition-all hover:-translate-x-1 select-none">
+            <input type="checkbox" onchange="updateRoutineProgress()" class="mt-1 w-5 h-5 rounded border-slateDark/20 text-orangeGlow focus:ring-orangeGlow cursor-pointer" data-weight="25">
+            <div class="space-y-0.5">
+              <p class="font-bold text-sm text-slateDark">🔍 의식주 건강 지식(AI 기반 수집 및 자체 검증) 정리</p>
+              <p class="text-[11px] text-slateDark/75 font-light">웰빙 지식: 신뢰 가능한 건강 정보를 선별하여 적용 방안 분석</p>
+            </div>
+          </label>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ========================================== -->
+  <!-- PAGE 3: 🔍 KNOWLEDGE & GUESTBOOK (#wellness-guestbook) -->
+  <!-- ========================================== -->
+  <main id="wellness-guestbook" class="app-page hidden relative pt-24 min-h-[90vh]">
+    <div class="max-w-5xl mx-auto px-6 py-8 space-y-12">
+      
+      <!-- Conceptual Header -->
+      <div class="space-y-4 fade-in">
+        <span class="text-xs font-bold tracking-widest text-[#8EAEB5] uppercase block">03. Logic &amp; Communication</span>
+        <h2 class="font-batang text-3xl sm:text-4xl font-bold text-navyDark dark:text-skyWarm">지식 상자와 소통의 바다</h2>
+        <p class="text-sm sm:text-base text-slateDark/80 dark:text-slate-300 max-w-3xl font-light leading-relaxed">
+          근래 건강한 의식주에 흥미가 생겨, 의문점을 검증하기 위해 YouTube와 Gemini AI를 활용하고 있습니다. 
+          귀납적으로 정리한 핵심 라이프 리포트와 함께, 하단의 방명록 편지병을 통해 SSAFY 16기 동료들과의 온오프라인 시너지를 희망합니다.
+        </p>
+      </div>
+
+      <!-- AI Assistant Mock Box & Interactive UI -->
+      <!-- 🔍 LOGICAL WELL-BEING / KNOWLEDGE BOX SECTION (똑똑한 건강 지식 상자) -->
+  <section id="wellness" class="py-24 px-6 bg-white relative z-20">
+    <div class="max-w-5xl mx-auto">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        
+        <!-- Left Side: Conceptual Info -->
+        <div class="lg:col-span-5 space-y-6 fade-in">
+          <span class="text-xs font-bold tracking-widest text-orangeGlow uppercase block">Logical Knowledge</span>
+          <h2 class="font-batang text-2xl sm:text-3xl md:text-4xl leading-snug font-bold text-slateDark">
+            AI·유튜브를 통해<br>틈틈이 건강 정보를<br>습득하고자 합니다!
+          </h2>
+          <p class="text-xs sm:text-sm text-slateDark/80 leading-relaxed font-light">
+            AI 검색 결과와 실생활 피드백 루프를 통해 귀납적으로 도출한 실용 정보입니다. 
+            주제 탭을 선택하여 정밀화된 데이터를 빠르게 확인해 보세요.
+          </p>
+          <div class="flex flex-wrap gap-2 pt-2">
+            <span class="px-3 py-1 bg-skyLight text-slateDark/80 text-xs rounded-full font-medium">#Gemini검색</span>
+            <span class="px-3 py-1 bg-skyLight text-slateDark/80 text-xs rounded-full font-medium">#의식주케어</span>
+            <span class="px-3 py-1 bg-skyLight text-slateDark/80 text-xs rounded-full font-medium">#루틴실천법</span>
+          </div>
+        </div>
+
+        <!-- Right Side: Interactive AI Assistant Simulator -->
+        <div class="lg:col-span-7 bg-[#FAF8F5] rounded-3xl p-6 border border-sandWarm shadow-md fade-in">
+          <div class="flex items-center gap-2 mb-4 text-xs font-medium text-slateDark/50 pb-3 border-b border-slateDark/5">
+            <i class="fa-solid fa-sparkles text-orangeGlow"></i> Gemini AI Wellness Engine (Active Sim)
+          </div>
+          
+          <!-- Presets buttons -->
+          <div class="flex flex-wrap gap-2 mb-4">
+            <button onclick="simulateQuery(1)" class="px-3 py-2 text-xs bg-white text-slateDark rounded-xl hover:bg-skyWarm font-medium shadow-sm transition-all text-left flex items-center gap-1.5 border border-white" id="qbtn-1">
+              🏊‍♂️ 공복 운동 식사는?
+            </button>
+            <button onclick="simulateQuery(2)" class="px-3 py-2 text-xs bg-white text-slateDark rounded-xl hover:bg-skyWarm font-medium shadow-sm transition-all text-left flex items-center gap-1.5 border border-white" id="qbtn-2">
+              💆‍♂️ 숙면 유도 음악 큐?
+            </button>
+            <button onclick="simulateQuery(3)" class="px-3 py-2 text-xs bg-white text-slateDark rounded-xl hover:bg-skyWarm font-medium shadow-sm transition-all text-left flex items-center gap-1.5 border border-white" id="qbtn-3">
+              🎯 루틴을 유지하는 비결?
+            </button>
+          </div>
+
+          <!-- Output Box -->
+          <div class="bg-white rounded-2xl p-5 min-h-[180px] border border-sandWarm flex flex-col justify-between relative overflow-hidden">
+            <div id="aiResponseContainer" class="space-y-3">
+              <p class="text-xs text-slateDark/50 italic flex items-center gap-2">
+                <i class="fa-solid fa-hourglass-start animate-spin"></i> 상기 데이터 프리셋을 선택하시면 검증된 분석 결과를 로드합니다.
+              </p>
+            </div>
+            
+            <!-- Deco Loader Bar -->
+            <div class="h-1 bg-[#CDE2F5] rounded-full w-full mt-4 overflow-hidden hidden" id="aiLoadingBar">
+              <div class="bg-orangeGlow h-full animate-pulse" style="width: 100%"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+      <!-- 💾 LocalStorage GUESTBOOK (도전 과제) -->
+      <div class="bg-white/60 dark:bg-slate-800/60 p-6 md:p-8 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-md space-y-6 fade-in">
+        <div class="text-center max-w-xl mx-auto space-y-2">
+          <span class="text-2xl">🍾</span>
+          <h3 class="font-batang text-xl font-bold text-navyDark dark:text-skyWarm">싸피 16기 동기 통신 쉘 (Guestbook)</h3>
+          <p class="text-xs text-slateDark/70 dark:text-slate-400 font-light leading-relaxed">
+            관심사가 비슷한 동기 여러분의 자극, 기술 고민, 격려를 바다에 띄워 보내주세요.<br>
+            메시지는 파도 밑 **LocalStorage**에 영구 저장되며, 전송 시 저의 사색적인 격려 답장을 즉각 수신합니다.
+          </p>
+        </div>
+
+        <!-- Input Area -->
+        <div class="max-w-lg mx-auto space-y-3 bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm">
+          <input type="text" id="guestName" class="w-full bg-sandBeige dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-3 text-xs font-light text-slateDark dark:text-slate-200" placeholder="닉네임 / SSAFY 동기 여부">
+          <textarea id="bottleText" rows="3" class="w-full bg-sandBeige dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-3 text-xs font-light text-slateDark dark:text-slate-200" placeholder="현지 님과 이야기 나누고 싶은 주제나 방명록을 띄워 보세요..."></textarea>
+          
+          <div class="flex items-center justify-between pt-1">
+            <span class="text-[9px] text-slateDark/40 dark:text-slate-400 font-medium">※ 입력된 글은 저장되어 브라우저를 껐다 켜도 남아있습니다.</span>
+            <button onclick="throwBottle()" class="px-5 py-2.5 bg-navyDark dark:bg-skyWarm text-sandBeige dark:text-navyDark rounded-full text-xs font-semibold hover:-translate-y-0.5 transition-all flex items-center gap-1.5 shadow-sm">
+              방명록 띄우기 <i class="fa-regular fa-paper-plane text-[10px]"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Display Messages Grid -->
+        <div class="space-y-4">
+          <h4 class="font-batang text-sm font-bold text-navyDark dark:text-skyWarm flex items-center gap-1.5">
+            <span class="w-2 h-2 bg-orangeGlow rounded-full"></span> 파도 위에 떠 있는 편지들 (<span id="guestCount">0</span>)
+          </h4>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="guestbookGrid">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- 🌅 GLOBAL FOOTER -->
+  <footer class="bg-white/80 dark:bg-slate-950 text-slateDark dark:text-slate-400 py-16 px-6 border-t border-slate-100 dark:border-slate-800 relative z-20">
+    <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-10">
+      <div class="md:col-span-5 space-y-4">
+        <h3 class="font-batang text-xl font-bold text-navyDark dark:text-skyWarm">🌊 선선한 해변 </h3>
+        <p class="text-xs text-slateDark/70 dark:text-slate-400 leading-relaxed font-light">
+          "나만의 선선한 해변을 찾아서: 건강한 루틴과 사색의 기록"<br>
+          스스로를 잡아 주는 작은 규칙과 사색 활동은 삶이 예기치 않은 스트레스로 흔들릴 때 우리를 튼튼하게 잡아 주는 고유 벡터가 됩니다.
+        </p>
+        <div class="text-[10px] text-slateDark/40 dark:text-slate-500 font-medium">
+          본 포트폴리오 사이트는 SSAFY 16기 JAVA 전공자 트랙 수강생 최현지의 정체성을 정밀화한 다중 가상 페이지 결과물입니다.
+        </div>
+      </div>
+
+      <div class="md:col-span-4 space-y-4">
+        <h4 class="font-batang font-bold text-sm text-navyDark dark:text-skyWarm">안정적 마인드와 백엔드 지향을 위해</h4>
+        <p class="text-xs text-slateDark/70 dark:text-slate-400 leading-relaxed font-light">
+          외로웠던 상반기 독자 학습을 종료하고, 싸피라는 거대한 네트워크 안에서 동기분들과 활발한 코드 교류 및 정서적 지탱을 이뤄 가기를 강력하게 희망하고 있습니다.
+        </p>
+      </div>
+
+      <div class="md:col-span-3 space-y-4">
+        <h4 class="font-batang font-bold text-sm text-navyDark dark:text-skyWarm">디자인 사양 (Design Token)</h4>
+        <ul class="text-[11px] text-slateDark/60 dark:text-slate-400 space-y-1.5 font-light">
+          <li>🌤️ Warm Sky Blue (#D1E3F3)</li>
+          <li>🏖️ Pale Sand Beige (#F9F6F0)</li>
+          <li>🍊 Orange Glow (#FF9E79)</li>
+          <li>💻 Pretendard &amp; 📖 Gowun Batang</li>
+        </ul>
+        <div class="pt-2 flex gap-2">
+          <span class="px-2 py-0.5 bg-skyLight dark:bg-slate-800 rounded-full text-[9px]">MBTI: INTJ (02년생)</span>
+          <span class="px-2 py-0.5 bg-skyLight dark:bg-slate-800 rounded-full text-[9px]">SSAFY 16기 JAVA</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="max-w-6xl mx-auto mt-12 pt-6 border-t border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row justify-between items-center text-[10px] text-slateDark/40 dark:text-slate-500 gap-4">
+      <p>© 2026 최현지. All rights reserved. Designed with logical care &amp; warm daytime ocean breeze.</p>
+      <div class="flex gap-4">
+        <a href="#" class="hover:text-orangeGlow transition-colors"><i class="fa-brands fa-github text-sm"></i></a>
+        <a href="#" class="hover:text-orangeGlow transition-colors"><i class="fa-regular fa-envelope text-sm"></i></a>
+        <a href="#" class="hover:text-orangeGlow transition-colors"><i class="fa-solid fa-mug-hot text-sm"></i></a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- 🧱 CALMING CONFETTI / SUCCESS MODAL (루틴 100% 달성 시 팝업) -->
+  <div class="fixed inset-0 bg-slateDark/40 backdrop-blur-sm z-50 flex items-center justify-center p-6 hidden transition-opacity duration-300 opacity-0" id="routineModal">
+    <div class="bg-white dark:bg-slate-800 rounded-3xl p-8 max-w-sm w-full text-center border border-slate-100 dark:border-slate-700 shadow-2xl space-y-6 transform scale-95 transition-transform duration-300" id="routineModalBody">
+      <div class="w-16 h-16 bg-skyLight dark:bg-slate-700 text-slateDark dark:text-skyWarm rounded-full flex items-center justify-center text-3xl mx-auto shadow-inner animate-bounce">
+        📊
+      </div>
+      <div class="space-y-2">
+        <h3 class="font-batang text-xl font-bold text-navyDark dark:text-skyWarm">일일 이행률 100% 달성</h3>
+        <p class="text-xs text-slateDark/80 dark:text-slate-300 leading-relaxed font-light">
+          오늘의 정량 습관 실행 프로세스를 완료했습니다. 
+          일관성 있게 약속한 수치를 이행하는 것은 전공 학습과 삶의 자율 통제력을 완벽히 지탱하는 단단한 초석이 됩니다.
+        </p>
+      </div>
+      <button onclick="closeRoutineModal()" class="w-full py-3 bg-navyDark dark:bg-skyWarm text-sandBeige dark:text-navyDark rounded-xl text-xs font-semibold shadow-md transition-all">
+        확인 완료
+      </button>
+    </div>
+  </div>
+
+  <!-- ⚓ LETTER BOTTLE RESPONSE MODAL (편지병 답장 모달) -->
+  <div class="fixed inset-0 bg-slateDark/40 backdrop-blur-sm z-50 flex items-center justify-center p-6 hidden transition-opacity duration-300 opacity-0" id="bottleModal">
+    <div class="bg-sandBeige dark:bg-slate-800 rounded-3xl p-8 max-w-md w-full text-center border border-slate-100 dark:border-slate-700 shadow-2xl space-y-6 transform scale-95 transition-transform duration-300" id="bottleModalBody">
+      <div class="w-12 h-12 bg-white dark:bg-slate-700 rounded-full flex items-center justify-center text-2xl mx-auto shadow-md">
+        ✉️
+      </div>
+      <div class="space-y-4 text-left">
+        <div class="text-center font-bold text-xs text-slateDark/50 tracking-widest uppercase">최현지 답신 수신</div>
+        <p class="font-batang italic text-sm md:text-base text-navyDark dark:text-skyWarm text-center leading-relaxed py-4 border-y border-slate-100 dark:border-slate-700" id="responseQuote">
+          "가끔 파도가 거칠게 일어도, 그것은 곧 백사장에 기분 좋은 선선한 흔적을 남기며 조용히 사라질 것입니다."
+        </p>
+      </div>
+      <button onclick="closeBottleModal()" class="w-full py-3 bg-navyDark dark:bg-skyWarm text-sandBeige dark:text-navyDark rounded-xl text-xs font-semibold shadow-md transition-all">
+        닫기
+      </button>
+    </div>
+  </div>
+
+  <!-- 📜 INTERACTIVE SCRIPTS -->
+  <script>
+    /* -----------------------------------------
+       1. Simulated MPA Router (Hashchange)
+    ----------------------------------------- */
+    function navigate() {
+      const hash = window.location.hash || '#home';
+      
+      // Hide all simulation pages
+      document.querySelectorAll('.app-page').forEach(page => page.classList.add('hidden'));
+      
+      // Show active page
+      const targetPage = document.querySelector(hash);
+      if (targetPage) {
+        targetPage.classList.remove('hidden');
+      }
+
+      // Update Header Tab status (현재 페이지 표시)
+      document.querySelectorAll('.nav-link').forEach(link => {
+        const linkHash = link.getAttribute('href');
+        if (linkHash === hash) {
+          link.className = "nav-link px-3 py-1.5 rounded-full transition-all bg-skyWarm/40 dark:bg-slate-800 font-bold text-orangeGlow border-b-2 border-orangeGlow";
+        } else {
+          link.className = "nav-link px-3 py-1.5 rounded-full transition-all hover:bg-slate-50 dark:hover:bg-slate-800 text-slateDark/70 dark:text-slate-300";
+        }
+      });
+
+      // Restart hero canvas animation on return to Home hash
+      if (hash === '#home') {
+        setTimeout(animateWaves, 50);
+      }
+      
+      // Reset scroll for new view
+      window.scrollTo(0, 0);
+    }
+    window.addEventListener('hashchange', navigate);
+    window.addEventListener('load', navigate);
+
+    /* -----------------------------------------
+       2. Dark/Light Mode Switcher (도전 과제)
+    ----------------------------------------- */
+    function initTheme() {
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+        document.getElementById('themeIcon').className = 'fa-regular fa-moon text-sm';
+      } else {
+        document.documentElement.classList.remove('dark');
+        document.getElementById('themeIcon').className = 'fa-regular fa-lightbulb text-sm';
+      }
+    }
+    
+    function toggleDarkMode() {
+      const isDark = document.documentElement.classList.contains('dark');
+      if (isDark) {
+        document.documentElement.classList.remove('dark');
+        localStorage.setItem('theme', 'light');
+        document.getElementById('themeIcon').className = 'fa-regular fa-lightbulb text-sm';
+      } else {
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+        document.getElementById('themeIcon').className = 'fa-regular fa-moon text-sm';
+      }
+    }
+    initTheme();
+
+    /* -----------------------------------------
+       3. Scroll Progress Indicator (도전 과제)
+    ----------------------------------------- */
+    window.addEventListener('scroll', () => {
+      const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = height > 0 ? (winScroll / height) * 100 : 0;
+      document.getElementById('scrollBar').style.width = scrolled + '%';
+    });
+
+    /* -----------------------------------------
+       4. Custom Cursor Follower (도전 과제)
+    ----------------------------------------- */
+    const cursor = document.getElementById('cursor');
+    const cursorDot = document.getElementById('cursorDot');
+
+    window.addEventListener('mousemove', (e) => {
+      // Small delay on outer ring for fluid lagging look
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top = e.clientY + 'px';
+      
+      cursorDot.style.left = e.clientX + 'px';
+      cursorDot.style.top = e.clientY + 'px';
+    });
+
+    // Cursor click feedback
+    window.addEventListener('mousedown', () => {
+      cursor.style.width = '30px';
+      cursor.style.height = '30px';
+      cursor.style.borderColor = '#B2D8D0';
+    });
+    window.addEventListener('mouseup', () => {
+      cursor.style.width = '20px';
+      cursor.style.height = '20px';
+      cursor.style.borderColor = '#FF9E79';
+    });
+
+    /* -----------------------------------------
+       5. Ambient Wave Canvas Animation (Hero)
+    ----------------------------------------- */
+    const canvas = document.getElementById('heroWaveCanvas');
+    const ctx = canvas.getContext('2d');
+    
+    let waveWidth = canvas.width = window.innerWidth;
+    let waveHeight = canvas.height = 260;
+    
+    let mouseX = 0;
+    let targetMouseX = 0;
+    
+    let waves = [
+      { y: 130, length: 0.005, amplitude: 35, speed: 0.015, color: 'rgba(209, 227, 243, 0.4)' },
+      { y: 150, length: 0.007, amplitude: 25, speed: 0.02, color: 'rgba(255, 158, 121, 0.25)' },
+      { y: 170, length: 0.004, amplitude: 45, speed: 0.01, color: 'rgba(249, 246, 240, 0.8)' }
+    ];
+    
+    function animateWaves() {
+      // Ensure element belongs to currently viewed dom segment
+      if (window.location.hash && window.location.hash !== '#home') return;
+      
+      ctx.clearRect(0, 0, waveWidth, waveHeight);
+      mouseX += (targetMouseX - mouseX) * 0.05;
+      
+      waves.forEach((wave, idx) => {
+        ctx.beginPath();
+        let mouseInfluence = (mouseX / waveWidth) * 20 * (idx + 1);
+        ctx.moveTo(0, waveHeight);
+        for (let i = 0; i < waveWidth; i++) {
+          let noise = Math.sin(i * wave.length + wave.speed * Date.now() * 0.1) * wave.amplitude;
+          noise += Math.cos(i * 0.002 + wave.speed * Date.now() * 0.05) * mouseInfluence;
+          ctx.lineTo(i, wave.y + noise);
+        }
+        ctx.lineTo(waveWidth, waveHeight);
+        ctx.fillStyle = wave.color;
+        ctx.fill();
+      });
+      
+      requestAnimationFrame(animateWaves);
+    }
+    
+    window.addEventListener('resize', () => {
+      waveWidth = canvas.width = window.innerWidth;
+      waveHeight = canvas.height = 260;
+    });
+    
+    window.addEventListener('mousemove', (e) => {
+      targetMouseX = e.clientX;
+    });
+
+    /* -----------------------------------------
+       6. Web Audio API Generated Ambient Waves
+    ----------------------------------------- */
+    let audioCtx = null;
+    let noiseNode = null;
+    let filterNode = null;
+    let lfoNode = null;
+    let lfoGain = null;
+    let isPlaying = false;
+    let audioInterval = null;
+    let progressInterval = null;
+    
+    let currentTrack = 'ambient'; 
+    const activeTrackTitle = document.getElementById('activeTrackTitle');
+    const activeTrackDesc = document.getElementById('activeTrackDesc');
+    const audioProgressBar = document.getElementById('audioProgressBar');
+    const audioPlayBtn = document.getElementById('audioPlayBtn');
+    const audioStateBadge = document.getElementById('audioStateBadge');
+    const audioCurrentTime = document.getElementById('audioCurrentTime');
+    const musicDisc = document.getElementById('musicDisc');
+    
+    let virtualProgress = 0;
+    
+    function initSynth() {
+      if (audioCtx) return;
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      audioCtx = new AudioContext();
+      
+      const bufferSize = 2 * audioCtx.sampleRate;
+      const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+      const output = noiseBuffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        output[i] = Math.random() * 2 - 1;
+      }
+      
+      noiseNode = audioCtx.createBufferSource();
+      noiseNode.buffer = noiseBuffer;
+      noiseNode.loop = true;
+      
+      filterNode = audioCtx.createBiquadFilter();
+      filterNode.type = 'lowpass';
+      filterNode.frequency.setValueAtTime(300, audioCtx.currentTime);
+      filterNode.Q.setValueAtTime(1, audioCtx.currentTime);
+      
+      const mainGain = audioCtx.createGain();
+      mainGain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+      
+      lfoNode = audioCtx.createOscillator();
+      lfoNode.type = 'sine';
+      lfoNode.frequency.setValueAtTime(0.15, audioCtx.currentTime);
+      
+      lfoGain = audioCtx.createGain();
+      lfoGain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+      
+      lfoNode.connect(lfoGain);
+      lfoGain.connect(mainGain.gain);
+      noiseNode.connect(filterNode);
+      filterNode.connect(mainGain);
+      mainGain.connect(audioCtx.destination);
+      
+      noiseNode.start(0);
+      lfoNode.start(0);
+    }
+    
+    function triggerRandomChime() {
+      if (!audioCtx || audioCtx.state === 'suspended') return;
+      const osc = audioCtx.createOscillator();
+      const gainNode = audioCtx.createGain();
+      
+      osc.type = 'sine';
+      const pitches = [523.25, 587.33, 659.25, 783.99, 880.00];
+      const randomPitch = pitches[Math.floor(Math.random() * pitches.length)];
+      osc.frequency.setValueAtTime(randomPitch, audioCtx.currentTime);
+      
+      gainNode.gain.setValueAtTime(0.0, audioCtx.currentTime);
+      gainNode.gain.linearRampToValueAtTime(0.05, audioCtx.currentTime + 0.1);
+      gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 3);
+      
+      osc.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 3.1);
+    }
+
+    function toggleAudio() {
+      if (isPlaying) {
+        if (audioCtx && audioCtx.state === 'running') {
+          audioCtx.suspend();
+        }
+        isPlaying = false;
+        audioPlayBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
+        audioStateBadge.innerText = '일시 정지';
+        musicDisc.style.animationPlayState = 'paused';
+        clearInterval(audioInterval);
+        clearInterval(progressInterval);
+      } else {
+        try {
+          if (!audioCtx) initSynth();
+          if (audioCtx.state === 'suspended') audioCtx.resume();
+          
+          isPlaying = true;
+          audioPlayBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+          audioStateBadge.innerText = '재생 중';
+          musicDisc.style.animationPlayState = 'running';
+          
+          audioInterval = setInterval(() => {
+            if (currentTrack === 'ambient') triggerRandomChime();
+          }, 4000);
+          
+          progressInterval = setInterval(() => {
+            virtualProgress += 1;
+            if (virtualProgress > 100) virtualProgress = 0;
+            audioProgressBar.style.width = `${virtualProgress}%`;
+            
+            let sec = virtualProgress * 2;
+            let minStr = Math.floor(sec / 60);
+            let secStr = (sec % 60).toString().padStart(2, '0');
+            audioCurrentTime.innerText = `${minStr}:${secStr}`;
+            
+            animateVisualizer();
+          }, 500);
+        } catch (e) {
+          console.error("Audio error: ", e);
+        }
+      }
+    }
+    
+    function changeTrack(track) {
+      currentTrack = track;
+      ['ambient', 'bossa', 'city'].forEach(t => {
+        const btn = document.getElementById(`btn-${t}-track`);
+        if (t === track) {
+          btn.className = 'text-[10px] px-2.5 py-1.5 rounded-full bg-skyWarm text-navyDark font-semibold shadow-sm';
+        } else {
+          btn.className = 'text-[10px] px-2.5 py-1.5 rounded-full bg-white dark:bg-slate-700 text-slateDark dark:text-slate-300 font-semibold';
+        }
+      });
+
+      if (track === 'ambient') {
+        activeTrackTitle.innerText = "생성형 해변의 파도 & 종소리";
+        activeTrackDesc.innerText = "Web Audio API 실시간 자연음 모듈레이션";
+        if (filterNode) filterNode.frequency.setValueAtTime(300, audioCtx.currentTime);
+      } else if (track === 'bossa') {
+        activeTrackTitle.innerText = "보사노바 & 클래식 재즈 하모니";
+        activeTrackDesc.innerText = "심신의 평온과 이완을 주는 저각성 60BPM 반주";
+        if (filterNode) filterNode.frequency.setValueAtTime(700, audioCtx.currentTime);
+      } else if (track === 'city') {
+        activeTrackTitle.innerText = "Retro City Pop & Classic Line";
+        activeTrackDesc.innerText = "선선한 물빛의 청량한 신디사이저 리듬";
+        if (filterNode) filterNode.frequency.setValueAtTime(1100, audioCtx.currentTime);
+      }
+      
+      virtualProgress = 0;
+      audioProgressBar.style.width = '0%';
+      audioCurrentTime.innerText = "0:00";
+    }
+
+    function animateVisualizer() {
+      for (let i = 1; i <= 6; i++) {
+        const bar = document.getElementById(`vbar${i}`);
+        if (isPlaying) {
+          const randHeight = Math.floor(Math.random() * 20) + 4;
+          bar.style.height = `${randHeight}px`;
+        } else {
+          bar.style.height = '1px';
+        }
+      }
+    }
+
+    /* -----------------------------------------
+       7. Alain de Botton Flipper Controller
+    ----------------------------------------- */
+    function toggleBookCard() {
+      document.getElementById('bookCard').classList.toggle('flipped');
+    }
+
+    /* -----------------------------------------
+       8. Interactive Timeline Node Mapping
+    ----------------------------------------- */
+    const timelineData = {
+      1: {
+        title: "💻 컴퓨터공학과 졸업 (02년생)",
+        desc: "02년생으로 컴퓨터공학 학사 과정을 졸업했습니다. 객체지향 기초와 JVM 메모리 구성을 파악하며 소프트웨어 개발의 단단한 설계 기초를 다졌습니다."
+      },
+      2: {
+        title: "🚫 프론트엔드 적성 소거 및 백엔드 지향",
+        desc: "컴퓨터공학과 전공 수업 도중 '프론트엔드는 적성이 아니다'라는 사실을 소거법으로 명확히 인지했습니다. "
+      },
+      3: {
+        title: "🏦 금융권 IT 백엔드 개발자 최종 목표 수렴",
+        desc: "이후 백엔드 개발에 집중했고, 이후 일련의 과정을 통해 <strong>'금융권 백엔드 개발자'</strong>라는 선명한 목표를 설정했습니다."
+      },
+      4: {
+        title: "🏊‍♂️ 상반기 외로운 수영과 독서의 정밀 루틴",
+        desc: "불필요한 생각을 없애기 위해 시작한 취미활동: <strong>수영!</strong><br>숏폼만 보다가 뇌가 녹고, 어휘력이 퇴화될 것 같아서 시작한 취미활동: <strong>독서!</strong>"
+      },
+      5: {
+        title: "🚀 SSAFY 16기 JAVA 전공자 트랙 입과",
+        desc: "혼자만의 공부로 지쳐가던 도중, 시너지와 자극을 나누기 위해 SSAFY 16기에 입과했습니다. 관심사가 비슷한 동기들과 정보와 코드를 공유하며 으쌰으쌰 동반 성장을 꿈꿉니다."
+      }
+      
+    };
+
+    function setTimeline(step) {
+      [1, 2, 3, 4, 5].forEach(num => {
+        const btn = document.getElementById(`tbtn-${num}`);
+        if (num === step) {
+          btn.className = "p-3 text-xs font-semibold rounded-xl text-center transition-all bg-skyWarm text-navyDark font-bold shadow-sm";
+        } else {
+          btn.className = "p-3 text-xs font-semibold rounded-xl text-center transition-all bg-slate-50 dark:bg-slate-700 text-slateDark dark:text-slate-300";
+        }
+      });
+      
+      const content = document.getElementById('timelineContent');
+      const data = timelineData[step];
+      content.innerHTML = `
+        <p class="font-bold text-navyDark dark:text-skyWarm text-base mb-2">${data.title}</p>
+        <p class="font-light">${data.desc}</p>
+      `;
+    }
+
+    /* -----------------------------------------
+       9. Routine Progress Tracker
+    ----------------------------------------- */
+    function updateRoutineProgress() {
+      const checkboxes = document.querySelectorAll('#story input[type="checkbox"]');
+      let totalWeight = 0;
+      let checkedWeight = 0;
+      
+      checkboxes.forEach(box => {
+        const weight = parseInt(box.getAttribute('data-weight'));
+        totalWeight += weight;
+        if (box.checked) {
+          checkedWeight += weight;
+          box.parentElement.classList.add('bg-white', 'dark:bg-slate-800', 'border-orangeGlow/40', 'shadow-sm');
+        } else {
+          box.parentElement.classList.remove('bg-white', 'dark:bg-slate-800', 'border-orangeGlow/40', 'shadow-sm');
+        }
+      });
+      
+      const percent = Math.round((checkedWeight / totalWeight) * 100);
+      document.getElementById('progressPercent').innerText = `${percent}%`;
+      const offset = 175.9 - (175.9 * percent) / 100;
+      document.getElementById('progressCircle').style.strokeDashoffset = offset;
+      
+      const statusText = document.getElementById('progressStatus');
+      if (percent === 0) statusText.innerText = "루틴 실천 대기 중입니다.";
+      else if (percent < 50) statusText.innerText = "가볍게 첫 발을 떼었습니다.";
+      else if (percent < 100) statusText.innerText = "절반 이상 도달했습니다.";
+      else {
+        statusText.innerText = "완벽히 단단하게 다졌습니다!";
+        triggerRoutineSuccess();
+      }
+    }
+    
+    function triggerRoutineSuccess() {
+      const modal = document.getElementById('routineModal');
+      modal.classList.remove('hidden');
+      setTimeout(() => {
+        modal.classList.add('opacity-100');
+        document.getElementById('routineModalBody').classList.add('scale-100');
+      }, 50);
+    }
+    
+    function closeRoutineModal() {
+      const modal = document.getElementById('routineModal');
+      modal.classList.remove('opacity-100');
+      document.getElementById('routineModalBody').classList.remove('scale-100');
+      setTimeout(() => modal.classList.add('hidden'), 300);
+    }
+
+    /* -----------------------------------------
+       10. AI Knowledge Engine Presets
+    ----------------------------------------- */
+    const presetsResponses = {
+      1: {
+        title: "💻 프론트엔드 적성 소거법과 이성적 판단",
+        p1: "전공 실습 강의와 프로젝트에서 CSS 디버깅 및 디바이스 오차 조정 과정이 제 성향의 논리 정합성과 어긋남을 감지했습니다.",
+        p2: "<strong>- 논리적 귀결:</strong> 예측 가능한 JVM 메모리 핸들링, 스프링 비즈니스 로직, 데이터 트랜잭션 관리와 같은 완벽 통제형 백엔드가 제게 수렴하는 최적의 길이라 확신했습니다."
+      },
+      2: {
+        title: "🏊‍♂️ 아침 공복 수영과 건강한 루틴 관리 비결",
+        p1: "수영은 저를 이성적으로 지탱하는 완벽한 뇌 리셋 수단입니다.",
+        p2: "<strong>- 공복 통제 요령:</strong> 저혈당을 방지하기 위해 입수 30분 전 꿀물이나 바나나 반 개 등 가벼운 당을 수급하고, 수영 후에는 수분을 200ml 이상 수혈하여 몸의 균형을 보호합니다."
+      },
+      3: {
+        title: "☕ 재즈, 보사노바, 클래식이 마음에 주는 평화",
+        p1: "감정의 주파수가 과부하에 직면했을 때, 악기 구성의 완급조절이 완벽한 음악은 훌륭한 뇌파 제어기입니다.",
+        p2: "<strong>- 신경 이완 메커니즘:</strong> 60~80BPM의 어쿠스틱 드럼 브러쉬 소리와 나일론 기타 선율은 부교감신경을 이성적으로 자극해 잡념을 제거하고 평화로운 평정을 회복하도록 유도합니다."
+      }
+    };
+    
+    function simulateQuery(id) {
+      const container = document.getElementById('aiResponseContainer');
+      const loader = document.getElementById('aiLoadingBar');
+      
+      [1, 2, 3].forEach(num => {
+        const btn = document.getElementById(`qbtn-${num}`);
+        if (num === id) {
+          btn.className = "px-3 py-2 text-xs bg-skyWarm text-navyDark font-bold rounded-xl shadow-sm transition-all";
+        } else {
+          btn.className = "px-3 py-2 text-xs bg-slate-50 dark:bg-slate-700 text-slateDark dark:text-slate-300 rounded-xl font-medium hover:bg-skyWarm/40 transition-all";
+        }
+      });
+
+      loader.classList.remove('hidden');
+      container.innerHTML = `<p class="text-xs text-slateDark/40 dark:text-slate-400 italic flex items-center gap-2 py-4">
+        <i class="fa-solid fa-spinner animate-spin"></i> 최적화 정보를 구조화하여 로드하는 중...
+      </p>`;
+      
+      setTimeout(() => {
+        loader.classList.add('hidden');
+        const data = presetsResponses[id];
+        container.innerHTML = `
+          <h4 class="font-batang font-bold text-sm text-navyDark dark:text-skyWarm">${data.title}</h4>
+          <p class="text-xs text-slateDark/80 dark:text-slate-300 font-light leading-relaxed">${data.p1}</p>
+          <div class="p-3 bg-white dark:bg-slate-800 rounded-xl text-[11px] text-slateDark/70 dark:text-slate-300 leading-relaxed shadow-inner">
+            ${data.p2}
+          </div>
+        `;
+      }, 800);
+    }
+
+    /* -----------------------------------------
+       11. LocalStorage Guestbook & Comfort System (도전 과제)
+    ----------------------------------------- */
+    const comfortingQuotes = [
+      "SSAFY 16기 동기로 만나서 진심으로 기쁩니다! 우리 같이 이성적이고 탄탄한 금융권 백엔드를 완벽히 구조화해 나갑시다.",
+      "수영 후 홀로 외롭게 스터디카페에서 키보드를 두드리던 지난한 계절은 끝났습니다. 이제 자극과 정보 교류를 이뤄낼 든든한 동기 세그먼트가 있습니다.",
+      "알랭 드 보통의 책 구절처럼, 우리는 살아가며 정합적이지 않은 불안에 휩싸이지만 작은 정량적 루틴으로 마침내 승리할 것입니다.",
+      "오늘도 수영과 학습에 가치를 부여하셨다면, 마음 놓고 보사노바나 재즈 반주에 몸을 누여 뇌에 완벽한 쿨다운을 양보하세요."
+    ];
+
+    function loadGuestbook() {
+      const stored = localStorage.getItem('hyeonji_guestbook');
+      const messages = stored ? JSON.parse(stored) : [];
+      
+      document.getElementById('guestCount').innerText = messages.length;
+      const grid = document.getElementById('guestbookGrid');
+      grid.innerHTML = '';
+
+      if (messages.length === 0) {
+        grid.innerHTML = `
+          <div class="col-span-full text-center py-8 text-xs text-slateDark/40 dark:text-slate-500 italic">
+             바다 위에 띄운 메시지가 아직 존재하지 않습니다. 첫 편지를 띄워 보세요.
+          </div>
+        `;
+        return;
+      }
+
+      // Render reversed so new message goes first
+      messages.slice().reverse().forEach((msg) => {
+        const card = document.createElement('div');
+        card.className = "bg-white/90 dark:bg-slate-900 p-4 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm flex flex-col justify-between space-y-3";
+        card.innerHTML = `
+          <div class="space-y-1">
+            <span class="text-[10px] font-bold text-orangeGlow uppercase">From: ${escapeHtml(msg.name)}</span>
+            <p class="text-xs text-slateDark dark:text-slate-300 font-light leading-relaxed break-words">${escapeHtml(msg.text)}</p>
+          </div>
+          <span class="text-[9px] text-slateDark/30 dark:text-slate-500 block text-right">${msg.time}</span>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function throwBottle() {
+      const nameInput = document.getElementById('guestName');
+      const textInput = document.getElementById('bottleText');
+      
+      const name = nameInput.value.trim() || '익명의 동기';
+      const text = textInput.value.trim();
+
+      if (!text) {
+        textInput.classList.add('border-red-400');
+        setTimeout(() => textInput.classList.remove('border-red-400'), 1500);
+        return;
+      }
+
+      const stored = localStorage.getItem('hyeonji_guestbook');
+      const messages = stored ? JSON.parse(stored) : [];
+      
+      const date = new Date();
+      const timeStr = `${date.getFullYear()}-${(date.getMonth()+1).toString().padStart(2,'0')}-${date.getDate().toString().padStart(2,'0')} ${date.getHours().toString().padStart(2,'0')}:${date.getMinutes().toString().padStart(2,'0')}`;
+
+      messages.push({ name, text, time: timeStr });
+      localStorage.setItem('hyeonji_guestbook', JSON.stringify(messages));
+
+      // Show random supportive reply quote
+      const randIdx = Math.floor(Math.random() * comfortingQuotes.length);
+      document.getElementById('responseQuote').innerText = `"${comfortingQuotes[randIdx]}"`;
+      
+      const modal = document.getElementById('bottleModal');
+      modal.classList.remove('hidden');
+      setTimeout(() => {
+        modal.classList.add('opacity-100');
+        document.getElementById('bottleModalBody').classList.add('scale-100');
+      }, 50);
+
+      // Reset Inputs
+      nameInput.value = '';
+      textInput.value = '';
+      
+      // Reload lists
+      loadGuestbook();
+    }
+
+    function closeBottleModal() {
+      const modal = document.getElementById('bottleModal');
+      modal.classList.remove('opacity-100');
+      document.getElementById('bottleModalBody').classList.remove('scale-100');
+      setTimeout(() => modal.classList.add('hidden'), 300);
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+    }
+
+    // Initialize Page 3 Guestbook on start
+    loadGuestbook();
+
+    /* -----------------------------------------
+       12. Fade In Scroll Animation Config
+    ----------------------------------------- */
+    const faders = document.querySelectorAll('.fade-in');
+    const header = document.getElementById('mainHeader');
+    
+    const appearOptions = {
+      threshold: 0.1,
+      rootMargin: "0px 0px -50px 0px"
+    };
+    
+    const appearOnScroll = new IntersectionObserver(function(entries, appearOnScroll) {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('appear');
+        appearOnScroll.unobserve(entry.target);
+      });
+    }, appearOptions);
+    
+    faders.forEach(fader => {
+      appearOnScroll.observe(fader);
+    });
+
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 50) {
+        header.classList.add('shadow-md');
+      } else {
+        header.classList.remove('shadow-md');
+      }
+    });
+  </script>
+</body>
+</html>
